@@ -30,6 +30,7 @@ public class CheatActivity extends Activity {
     private TextView mAnswerTextView;
     private Button mShowAnswer;
     private Boolean mIsCheater;
+    private TextView mApiTextView;
 
     private void setAnswerShownResult(boolean isAnswerShown) {
         Intent data = new Intent();
@@ -67,6 +68,10 @@ public class CheatActivity extends Activity {
             setAnswerShownResult(false);
             // they haven't seen the answer yet
         }
+
+        mApiTextView = (TextView) findViewById(R.id.api_text_view);
+        //String version = Integer.toString(android.os.Build.VERSION.SDK_INT);
+        mApiTextView.setText("API level " + android.os.Build.VERSION.SDK_INT);
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
