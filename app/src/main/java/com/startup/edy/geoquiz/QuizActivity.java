@@ -1,7 +1,10 @@
 package com.startup.edy.geoquiz;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +31,7 @@ public class QuizActivity extends Activity {
     Button mNextButton;
     Button mCheatButton;
     private TextView mQuestionTextView;
+    private TextView mApiTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[]{
             new TrueFalse(R.string.question_oceans, true),
@@ -78,12 +82,19 @@ public class QuizActivity extends Activity {
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
+    @TargetApi(11)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Log.d(TAG, "onCreate(Bundle) called");
+        Log.d(TAG, "onCreate(Bundle) called");
         Log.d(TAG, "onCreate(Bundle) called for GeoQuiz");
         setContentView(R.layout.activity_quiz);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ActionBar actionBar = getActionBar();
+            actionBar.setSubtitle("Bodies of Water");
+        }
+
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
@@ -121,6 +132,10 @@ public class QuizActivity extends Activity {
                 updateQuestion();
             }
         });
+
+        mApiTextView = (TextView) findViewById(R.id.api_text_view);
+        String version = Integer.toString(android.os.Build.VERSION.SDK_INT);
+        mApiTextView.setText("API level " + version);
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
