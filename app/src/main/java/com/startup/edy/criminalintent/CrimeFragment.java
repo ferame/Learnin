@@ -13,6 +13,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,8 +56,12 @@ public class CrimeFragment extends Fragment {
 
         //Reference to the new button
         mDateButton = (Button)v.findViewById(R.id.crime_date);
-        mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);//No response to user press, as it is disabled
+        Date crimeDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM d, yyyy.");
+        String formattedDateString = formatter.format(crimeDate);
+        mDateButton.setText(formattedDateString);
+        mDateButton.setEnabled(false);
+
 
         //Listening for CheckBox changes
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
