@@ -64,20 +64,17 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         });
 
         //Reference to the new button
-        mDateButton = (Button) v.findViewById(R.id.crime_date);
         Date crimeDate = mCrime.getDate();
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM d, yyyy.");
         String formattedDateString = formatter.format(crimeDate);
-        mDateButton.setText(formattedDateString);
-        mDateButton.setEnabled(false);
+        mDateButton = (Button)v.findViewById(R.id.crime_date);
+        mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 FragmentManager fm = getActivity()
                         .getSupportFragmentManager();
                 DatePickerFragment dialog = new DatePickerFragment();
                 dialog.show(fm, DIALOG_DATE);
-
             }
         });
 
