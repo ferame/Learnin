@@ -1,7 +1,10 @@
 package com.startup.edy.criminalintent;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -30,6 +33,16 @@ public class TimePickerFragment extends DialogFragment{
         return fragment;
     }
 
+    private void sendResult(int resultCode){
+        if(getTargetFragment() == null)
+            return;
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_TIME, mTime);
+
+        getTargetFragment()
+                .onActivityResult(getTargetRequestCode(), resultCode, intent);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         mTime = (Date)getArguments().getSerializable(EXTRA_TIME);
@@ -37,7 +50,11 @@ public class TimePickerFragment extends DialogFragment{
         // Create a Calendar to get the hours and minutes
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mTime);
-        final int hour = calendar.get(Calendar.HOUR);
+        // Use a calendar object to get the month, day, and year
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH);
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR);
         int minute = calendar.get(Calendar.MINUTE);
 
 
@@ -50,17 +67,11 @@ public class TimePickerFragment extends DialogFragment{
         timePicker.setCurrentHour(hour);
         timePicker.setCurrentMinute(minute);
 
-
-        // Use a calendar object to get the month, day, and year
-        final int mYear = calendar.get(Calendar.YEAR);
-        final int mMonth = calendar.get(Calendar.MONTH);
-        final int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 // Translate to a Date object using a Calendar
-                mTime = new GregorianCalendar(mYear,mMonth,mDay,hourOfDay,minute).getTime();
+                mTime = new GregorianCalendar(year,month,day,hourOfDay,minute).getTime();
                 getArguments().putSerializable(EXTRA_TIME, mTime);
             }});
 
@@ -82,10 +93,18 @@ public class TimePickerFragment extends DialogFragment{
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setTitle(R.string.time_picker_title)
-                .setPositiveButton(android.R.string.ok, null)
+                //.setPositiveButton(android.R.string.ok, null)
+                .setPositiveButton(
+                        android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sendResult(Activity.RESULT_OK);
+                            }
+                        })
                 .create();
-    }
 
+    }
 
 
 }
