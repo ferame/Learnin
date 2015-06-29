@@ -88,13 +88,18 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         });
 
         //Reference to the new button
+        Date crimeTime = mCrime.getDate();
+        SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm");
+        String formattedDateString2 = formatter2.format(crimeTime);
         mTimeButton = (Button)v.findViewById(R.id.crime_time);
-        mTimeButton.setText("set Time!");
-        mTimeButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        mTimeButton.setText("Set time, now it's " + formattedDateString2);
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 FragmentManager fm = getActivity()
                         .getSupportFragmentManager();
-                TimePickerFragment dialog = new TimePickerFragment();
+                //TimePickerFragment dialog = new TimePickerFragment();
+                TimePickerFragment dialog = TimePickerFragment
+                        .newInstance(mCrime.getDate());
                 dialog.show(fm, DIALOG_TIME);
             }
         });
