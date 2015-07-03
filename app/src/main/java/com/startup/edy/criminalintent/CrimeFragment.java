@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,15 +21,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CrimeFragment extends android.support.v4.app.Fragment {
+
+public class CrimeFragment extends Fragment {
     public static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
 
@@ -47,6 +47,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Nullable
     @TargetApi(11)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
@@ -54,7 +55,9 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         View v = inflater.inflate(R.layout.fragment_crime, parent, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            if (NavUtils.getParentActivityName(getActivity())!= null) {
+                getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         }
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
@@ -75,10 +78,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         });
 
         //Reference to the new button
-        Date crimeDate = mCrime.getDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM d, yyyy.");
-        String formattedDateString = formatter.format(crimeDate);
-        mDateButton = (Button)v.findViewById(R.id.crime_date);
+        mDateButton = (Button) v.findViewById(R.id.crime_date);
         updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -121,7 +121,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) return;
         if (requestCode == REQUEST_DATE) {
-            Date date = (Date)data
+            Date date = (Date) data
                     .getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
@@ -129,9 +129,12 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
+                if(NavUtils.getParentActivityName(getActivity()) != null){
+                    NavUtils.navigateUpFromSameTask(getActivity());
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
