@@ -39,6 +39,14 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
 
+    public static CrimeFragment newInstance(UUID crimeId) {
+        Bundle args = new Bundle();
+        args.putSerializable(EXTRA_CRIME_ID, crimeId);
+        CrimeFragment fragment = new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,16 +71,16 @@ public class CrimeFragment extends Fragment {
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(
-                    CharSequence c, int start, int before, int count) {
-                mCrime.setTitle(c.toString());
+                    CharSequence s, int start, int before, int count) {
+                mCrime.setTitle(s.toString());
             }
 
             public void beforeTextChanged(
-                    CharSequence c, int start, int count, int after) {
+                    CharSequence s, int start, int count, int after) {
                 // This space intentionally left blank
             }
 
-            public void afterTextChanged(Editable c) {
+            public void afterTextChanged(Editable s) {
                 // This one too
             }
         });
@@ -105,18 +113,6 @@ public class CrimeFragment extends Fragment {
         return v;
     }
 
-    public static CrimeFragment newInstance(UUID crimeId) {
-        Bundle args = new Bundle();
-        args.putSerializable(EXTRA_CRIME_ID, crimeId);
-        CrimeFragment fragment = new CrimeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    private void updateDate() {
-        mDateButton.setText(mCrime.getDate().toString());
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) return;
@@ -126,6 +122,10 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateDate();
         }
+    }
+
+    private void updateDate() {
+        mDateButton.setText(mCrime.getDate().toString());
     }
 
     @Override
@@ -139,5 +139,11 @@ public class CrimeFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).saveCrimes();
     }
 }
