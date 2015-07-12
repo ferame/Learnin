@@ -13,6 +13,8 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +133,11 @@ public class CrimeFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            //Edit another
+            case R.id.menu_item_delete_the_crime:
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                CrimeLab crimeLab = CrimeLab.get(getActivity());
+                return true;
             case android.R.id.home:
                 if(NavUtils.getParentActivityName(getActivity()) != null){
                     NavUtils.navigateUpFromSameTask(getActivity());
@@ -145,5 +152,12 @@ public class CrimeFragment extends Fragment {
     public void onPause() {
         super.onPause();
         CrimeLab.get(getActivity()).saveCrimes();
+    }
+
+    //Editing
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.crime_item_context, menu);
     }
 }
